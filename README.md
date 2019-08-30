@@ -1,1 +1,2 @@
 # TodoistLineNotify
+Todoistから明日までのTODOを拾ってきてLINEで通知してくれるやつ
