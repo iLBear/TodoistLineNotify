@@ -48,10 +48,10 @@ class TodoistList
 
     # p tasks
 
+    out = ""
     if tasks.empty?
       out = "\n💎タスクがありません💎"
     else
-      out = ""
       old = false
       tasks.sort.each do |a|
         out << "\n"
