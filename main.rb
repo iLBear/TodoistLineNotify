@@ -35,7 +35,6 @@ class TodoistList
   def format_msg(msg)
     msg = JSON.parse(msg.body)
     tasks = Hash.new
-    out = ""
     msg["items"].select{|k| k["due"]!=nil and (Date.parse(k["due"]["date"]) <= Date.today + 1)}.each do |itm|
 
       /(\d{4}\-\d{2}\-\d{2})T?(\d{2}:\d{2})?(:\d{2})?Z?/ =~ itm["due"]["date"]
@@ -49,28 +48,32 @@ class TodoistList
 
     # p tasks
 
-    old = false
-    tasks.sort.each do |a|
-      out << "\n"
-      case Date.parse(a[0])
-      when Date.today + 1
-        out << "⏳明日⏳\n"
-      when Date.today
-        out << "📅今日📅\n"
-      else
-        if old
-          out.chomp!
+    if tasks.empty?
+      out = "\n💎タスクがありません💎"
+    else
+      out = ""
+      old = false
+      tasks.sort.each do |a|
+        out << "\n"
+        case Date.parse(a[0])
+        when Date.today + 1
+          out << "⏳明日⏳\n"
+        when Date.today
+          out << "📅今日📅\n"
         else
-          out << "☠️期限切れ☠️\n"
-          old = true
+          if old
+            out.chomp!
+          else
+            out << "☠️期限切れ☠️\n"
+            old = true
+          end
+        end
+
+        a[1].sort_by{|k| k[:disp]}.each do |t|
+            out << "✅️#{t[:title]}\n"
         end
       end
-
-      a[1].sort_by{|k| k[:disp]}.each do |t|
-          out << "✅️#{t[:title]}\n"
-      end
     end
-
     out
   end
 
